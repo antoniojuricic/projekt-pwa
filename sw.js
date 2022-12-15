@@ -5,7 +5,7 @@ let coreAssets = [
   "recorder.html",
   "404.html",
   "offline.html",
-  "https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.2.3/css/bootstrap.min.css",
+  "https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css",
 ];
 
 const cacheName = "cache-1";
