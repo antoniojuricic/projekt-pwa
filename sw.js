@@ -4,6 +4,7 @@ let coreAssets = [
   "index.html",
   "recorder.html",
   "404.html",
+  "offline.html",
   "https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.2.3/css/bootstrap.min.css",
 ];
 
