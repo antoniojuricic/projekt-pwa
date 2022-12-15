@@ -1,28 +1,39 @@
 let coreAssets = [
-    '/recorder.js',
-    'assets/img/logo-192.png',
-    'assets/img/logo-512.png'
-  ];
-  
-  self.addEventListener('install', function (event) {
-  
-    // Cache core assets
-    event.waitUntil(caches.open('app').then(function (cache) {
-      for (let asset of coreAssets) {
-        cache.add(new Request(asset));
-      }
-      return cache;
-    }));
-  
-  });
+  "/",
+  "manifest.json",
+  "index.html",
+  "recorder.html",
+  "404.html",
+  "https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.2.3/css/bootstrap.min.css",
+];
 
-self.addEventListener('activate', event => {
-    console.log('Activated, V1 now ready to handle fetches!');
+const cacheName = "cache-1";
+
+self.addEventListener("install", (event) => {
+  event.waitUntil(
+      caches.open(cacheName).then((cache) => {
+          return cache.addAll(coreAssets);
+      })
+  );
 });
 
-self.addEventListener('fetch', event => {
-    const url = new URL(event.request.url);
-    if (url.origin == location.origin && url.pathname == '/dog.svg') {
-        event.respondWith(caches.match('/cat.svg'));
-    }
+self.addEventListener("fetch", (event) => {
+  event.respondWith(
+      caches
+          .match(event.request)
+          .then((response) => {
+              return fetch(event.request).then((response) => {
+                  if (response.status === 404) {
+                      return caches.match("404.html");
+                  }
+                  return caches.open(staticCacheName).then((cache) => {
+                      cache.put(event.request.url, response.clone());
+                      return response;
+                  });
+              });
+          })
+          .catch((error) => {
+              return caches.match("offline.html");
+          })
+  );
 });
