@@ -3,6 +3,8 @@ let coreAssets = [
   "manifest.json",
   "index.html",
   "recorder.html",
+  "404.html",
+  "offline.html",
   "https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css",
 ];
 
@@ -16,16 +18,25 @@ self.addEventListener("install", (event) => {
   );
 });
 
-self.addEventListener("fetch", (e) => {
-  e.respondWith(
-    (async () => {
-      const r = await caches.match(e.request);
-      if (r) {
-        return r;
-      }
-      const response = await fetch(e.request);
-      return response;
-    })()
+self.addEventListener("fetch", (event) => {
+  event.respondWith(
+    caches
+      .match(event.request)
+      .then((response) => {
+        if (response) return response;
+        return fetch(event.request).then((response) => {
+          if (response.status === 404) {
+            return caches.match("404.html");
+          }
+          return caches.open(cacheName).then((cache) => {
+            cache.put(event.request.url, response.clone());
+            return response;
+          });
+        });
+      })
+      .catch((e) => {
+        return caches.match("offline.html");
+      })
   );
 });
 
@@ -42,7 +53,9 @@ function sendNotif() {
     .then(function (res) {
       if (res.ok) {
         res.json().then(function (data) {
-          self.registration.showNotification("Obavijest o upotrebi poslana u pozadini");
+          self.registration.showNotification(
+            "Obavijest o upotrebi poslana u pozadini"
+          );
         });
       } else {
       }
