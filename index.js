@@ -1,7 +1,7 @@
 const express = require("express");
 const nodemailer = require("nodemailer");
 const app = express();
-const httpPort = 80;
+const port = process.env.PORT || 3001;
 
 app.get("/sendNotif", function (req, res) {
   var transporter = nodemailer.createTransport({
@@ -30,6 +30,6 @@ app.get("/sendNotif", function (req, res) {
   });
 });
 
-app.listen(httpPort, function () {
-  console.log(`HTTP listening on port: ${httpPort}`);
+app.listen(port, function () {
+  console.log(`HTTP listening on port: ${port}`);
 });
