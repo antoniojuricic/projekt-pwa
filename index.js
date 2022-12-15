@@ -21,10 +21,10 @@ app.get("/sendNotif", function (req, res) {
   });
 
   message = {
-    from: "from-example@email.com",
+    from: "pwa-project@mailtrap.io",
     to: "antoniojuricic1@gmail.com",
-    subject: "Subject",
-    text: "Hello SMTP Email",
+    subject: "Nova snimka",
+    text: "Snimljena je nova zvučna snimka",
   };
   transporter.sendMail(message, function (err, info) {
     if (err) {

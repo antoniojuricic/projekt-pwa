@@ -12,40 +12,44 @@ const cacheName = "cache-1";
 
 self.addEventListener("install", (event) => {
   event.waitUntil(
-      caches.open(cacheName).then((cache) => {
-          return cache.addAll(coreAssets);
-      })
+    caches.open(cacheName).then((cache) => {
+      return cache.addAll(coreAssets);
+    })
   );
 });
 
-self.addEventListener('fetch', (e) => {
-  e.respondWith((async () => {
-    const r = await caches.match(e.request);
-    if (r) { return r; }
-    const response = await fetch(e.request);
-    return response;
-  })());
+self.addEventListener("fetch", (e) => {
+  e.respondWith(
+    (async () => {
+      const r = await caches.match(e.request);
+      if (r) {
+        return r;
+      }
+      const response = await fetch(e.request);
+      return response;
+    })()
+  );
 });
 
-self.addEventListener('sync', function(event) {
-    if (event.tag === 'sendNotif') {
-        event.waitUntil(sendNotif());
-    }
+self.addEventListener("sync", function (event) {
+  if (event.tag === "sendNotif") {
+    event.waitUntil(sendNotif());
+  }
 });
 
 function sendNotif() {
   fetch("/sendNotif", {
     method: "GET",
-})
+  })
     .then(function (res) {
-        if (res.ok) {
-            res.json().then(function (data) {
-                self.registration.showNotification("Obavijest poslana u pozadini");
-            });
-        } else {
-        }
+      if (res.ok) {
+        res.json().then(function (data) {
+          self.registration.showNotification("Obavijest o upotrebi poslana u pozadini");
+        });
+      } else {
+      }
     })
     .catch(function (error) {
-        console.log(error);
+      console.log(error);
     });
 }

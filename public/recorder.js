@@ -3,52 +3,51 @@ const recBtn = document.querySelector("#recBtn");
 const downloadLink = document.getElementById("download");
 
 startRec = () => {
-    recBtn.textContent = "Zaustavi snimanje";
-    recBtn.classList.toggle("btn-danger");
-    recBtn.removeEventListener("click", startRec);
-    recBtn.addEventListener("click", stopRec);
-    window.recordedChunks = [];
-    navigator.mediaDevices
-        .getUserMedia({ audio: true, video: false })
-        .then((stream) => {
-            window.stream = stream;
-            const options = { mimeType: "audio/webm" };
-            mediaRecorder = new MediaRecorder(stream, options);
+  recBtn.textContent = "Zaustavi snimanje";
+  recBtn.classList.toggle("btn-danger");
+  recBtn.removeEventListener("click", startRec);
+  recBtn.addEventListener("click", stopRec);
+  window.recordedChunks = [];
+  navigator.mediaDevices
+    .getUserMedia({ audio: true, video: false })
+    .then((stream) => {
+      window.stream = stream;
+      const options = { mimeType: "audio/webm" };
+      mediaRecorder = new MediaRecorder(stream, options);
 
-            mediaRecorder.ondataavailable = (e) => {
-                window.recordedChunks.push(e.data);
-            };
+      mediaRecorder.ondataavailable = (e) => {
+        window.recordedChunks.push(e.data);
+      };
 
-            mediaRecorder.onstop = function (e) {
-                let blob = new Blob(window.recordedChunks, {
-                    type: "audio/ogg; codecs=opus",
-                });
-                let blobURL = window.URL.createObjectURL(blob);
-                window.recordedChunks = [];
-                window.player.src = blobURL;
-                recBtn.textContent = "Započni snimanje";
-                recBtn.classList.toggle("btn-danger");
-                recBtn.removeEventListener("click", stopRec);
-                recBtn.addEventListener("click", startRec);
-            };
-            mediaRecorder.start();
-            window.mediaRecorder = mediaRecorder;
+      mediaRecorder.onstop = function (e) {
+        let blob = new Blob(window.recordedChunks, {
+          type: "audio/ogg; codecs=opus",
         });
+        let blobURL = window.URL.createObjectURL(blob);
+        window.recordedChunks = [];
+        window.player.src = blobURL;
+        recBtn.textContent = "Započni snimanje";
+        recBtn.classList.toggle("btn-danger");
+        recBtn.removeEventListener("click", stopRec);
+        recBtn.addEventListener("click", startRec);
+      };
+      mediaRecorder.start();
+      window.mediaRecorder = mediaRecorder;
+    });
 };
 
 stopRec = () => {
-    window.mediaRecorder.stop();
-    window.stream.getTracks().forEach(function (track) {
-        track.stop();
-    });
-    
-    if (!navigator.serviceWorker){
-        return console.error("Service Worker not supported")
-    }
+  window.mediaRecorder.stop();
+  window.stream.getTracks().forEach(function (track) {
+    track.stop();
+  });
 
-    navigator.serviceWorker.ready
-    .then(registration => registration.sync.register('sendNotif'))
-    .then(() => console.log("Registered background sync"))
-    .catch(err => console.error("Error registering background sync", err))
-}
+  if (!navigator.serviceWorker) {
+    return console.error("Service Worker not supported");
+  }
+
+  navigator.serviceWorker.ready
+    .then((registration) => registration.sync.register("sendNotif"))
+    .catch((err) => console.error("Error registering background sync", err));
+};
 recBtn.addEventListener("click", startRec);
