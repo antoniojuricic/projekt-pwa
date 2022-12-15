@@ -1,6 +1,7 @@
 const express = require("express");
 const nodemailer = require("nodemailer");
 const app = express();
+const httpPort = 80;
 
 app.get("/sendNotif", function (req, res) {
   var transporter = nodemailer.createTransport({
