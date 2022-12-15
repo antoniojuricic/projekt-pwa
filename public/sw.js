@@ -3,8 +3,6 @@ let coreAssets = [
   "manifest.json",
   "index.html",
   "recorder.html",
-  "404.html",
-  "offline.html",
   "https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css",
 ];
 
