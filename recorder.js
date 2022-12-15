@@ -41,6 +41,14 @@ stopRec = () => {
     window.stream.getTracks().forEach(function (track) {
         track.stop();
     });
-};
+    
+    if (!navigator.serviceWorker){
+        return console.error("Service Worker not supported")
+    }
 
+    navigator.serviceWorker.ready
+    .then(registration => registration.sync.register('sendNotif'))
+    .then(() => console.log("Registered background sync"))
+    .catch(err => console.error("Error registering background sync", err))
+}
 recBtn.addEventListener("click", startRec);
