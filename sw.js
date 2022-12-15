@@ -40,8 +40,7 @@ self.addEventListener('sync', function(event) {
 
 function sendNotif() {
   fetch("/sendNotif", {
-    method: "POST",
-    body: '',
+    method: "GET",
 })
     .then(function (res) {
         if (res.ok) {

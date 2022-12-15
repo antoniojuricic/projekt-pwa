@@ -2,7 +2,7 @@ const express = require("express");
 const nodemailer = require("nodemailer");
 const app = express();
 
-app.post("/sendNotif", function (req, res) {
+app.get("/sendNotif", function (req, res) {
   var transporter = nodemailer.createTransport({
     host: "smtp.mailtrap.io",
     port: 2525,
