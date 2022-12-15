@@ -30,7 +30,9 @@
       </div>
       <script>
         navigator.serviceWorker.register('./sw.js')
-          .then()
+          .then(registration => navigator.serviceWorker.ready)
+          .then(registration => {
+            Notification.requestPermission()})
           .catch(err => console.error('Error registering service worker', err));
       </script>
 </body>
