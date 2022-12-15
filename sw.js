@@ -18,25 +18,15 @@ self.addEventListener("install", (event) => {
   );
 });
 
-self.addEventListener("fetch", (event) => {
-  event.respondWith(
-      caches
-          .match(event.request)
-          .then((response) => {
-              return fetch(event.request).then((response) => {
-                  if (response.status === 404) {
-                      return caches.match("404.html");
-                  }
-                  return caches.open(staticCacheName).then((cache) => {
-                      cache.put(event.request.url, response.clone());
-                      return response;
-                  });
-              });
-          })
-          .catch((error) => {
-              console.log(error);
-              return caches.match("offline.html");
-              
-          })
-  );
+self.addEventListener('fetch', (e) => {
+  e.respondWith((async () => {
+    const r = await caches.match(e.request);
+    console.log(`[Service Worker] Fetching resource: ${e.request.url}`);
+    if (r) { return r; }
+    const response = await fetch(e.request);
+    const cache = await caches.open(cacheName);
+    console.log(`[Service Worker] Caching new resource: ${e.request.url}`);
+    cache.put(e.request, response.clone());
+    return response;
+  })());
 });
