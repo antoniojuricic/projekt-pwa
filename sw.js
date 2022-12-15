@@ -39,9 +39,20 @@ self.addEventListener('sync', function(event) {
 });
 
 function sendNotif() {
-	return update({ url: `/sendNotif` })
-    	.then(refresh)
-    	.then((response) => self.registration.showNotification(
-    		`${response}`
-    	))
+  fetch("/sendNotif", {
+    method: "POST",
+    body: '',
+})
+    .then(function (res) {
+        if (res.ok) {
+            res.json().then(function (data) {
+                console.log("ok");
+            });
+        } else {
+            console.log(res);
+        }
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
 }
