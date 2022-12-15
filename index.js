@@ -28,3 +28,7 @@ app.get("/sendNotif", function (req, res) {
     }
   });
 });
+
+app.listen(httpPort, function () {
+  console.log(`HTTP listening on port: ${httpPort}`);
+});
